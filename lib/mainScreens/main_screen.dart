@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:customer_app/global/global.dart';
+import 'package:customer_app/assistants/assistant_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -19,6 +19,12 @@ class _MainScreenState extends State<MainScreen> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    AssistantMethods.readCurrentOnlineUserInfo();
+  }
 
   blackThemeGoogleMap() {
     newgoogleMapController!.setMapStyle('''
