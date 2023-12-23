@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:customer_app/assistants/assistant_methods.dart';
+import 'package:customer_app/global/global.dart';
+import 'package:customer_app/widgets/my_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -23,8 +24,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    AssistantMethods.readCurrentOnlineUserInfo();
   }
+
+  GlobalKey<ScaffoldState> sKey = GlobalKey<ScaffoldState>();
+  double searchLocationContainerHeight = 220.0;
 
   blackThemeGoogleMap() {
     newgoogleMapController!.setMapStyle('''
@@ -195,6 +198,19 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: sKey,
+      drawer: Container(
+        width: 265,
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Colors.black,
+          ),
+          child: MyDrawer(
+            name: userModelCurrentInfo!.name,
+            email: userModelCurrentInfo!.email,
+          ),
+        ),
+      ),
       body: Stack(
         children: [
           GoogleMap(
@@ -206,7 +222,62 @@ class _MainScreenState extends State<MainScreen> {
               newgoogleMapController = controller;
               blackThemeGoogleMap();
             },
-          )
+          ),
+          Positioned(
+              top: 30,
+              left: 22,
+              child: GestureDetector(
+                onTap: () {
+                  sKey.currentState!.openDrawer();
+                },
+                child: const CircleAvatar(
+                  backgroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.black54,
+                  ),
+                ),
+              )),
+          Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: AnimatedSize(
+                curve: Curves.easeIn,
+                duration: const Duration(milliseconds: 120),
+                child: Container(
+                  height: searchLocationContainerHeight,
+                  decoration: const BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20)),
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.add_location_alt_outlined,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(
+                              width: 12.0,
+                            ),
+                            Text(
+                              "From",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ))
         ],
       ),
     );
